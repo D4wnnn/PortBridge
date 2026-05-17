@@ -14,9 +14,13 @@ const trayIconPath = path.join(__dirname, '..', 'assets', 'tray.png');
 const startHidden = process.argv.includes('--hidden');
 const configFileName = 'profiles.json';
 const migrationMarkerFileName = 'profiles.migrated';
+const appName = 'PortBridge';
+const legacyUserDataNames = ['auto-proxy'];
+
+app.setName(appName);
 
 if (process.platform === 'win32') {
-  app.setAppUserModelId('Auto Proxy');
+  app.setAppUserModelId(appName);
 }
 
 function getConfigPath() {
@@ -24,7 +28,9 @@ function getConfigPath() {
 }
 
 function getLegacyConfigPaths() {
-  return [path.join(app.getAppPath(), configFileName), path.join(process.cwd(), configFileName)]
+  const legacyUserDataPaths = legacyUserDataNames.map((name) => path.join(app.getPath('appData'), name, configFileName));
+
+  return [...legacyUserDataPaths, path.join(app.getAppPath(), configFileName), path.join(process.cwd(), configFileName)]
     .filter((filePath, index, paths) => filePath !== getConfigPath() && paths.indexOf(filePath) === index);
 }
 
@@ -147,10 +153,10 @@ function createTray() {
   if (tray) return;
 
   tray = new Tray(createTrayIcon());
-  tray.setToolTip('Auto Proxy');
+  tray.setToolTip(appName);
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: '打开 Auto Proxy', click: showMainWindow },
+      { label: `打开 ${appName}`, click: showMainWindow },
       { type: 'separator' },
       { label: '退出', click: quitApp }
     ])
@@ -164,7 +170,7 @@ function createWindow() {
     height: 650,
     minWidth: 900,
     minHeight: 560,
-    title: 'Auto Proxy',
+    title: appName,
     icon: iconFromPath(appIconPath),
     show: false,
     backgroundColor: '#f6f7f9',
@@ -245,7 +251,7 @@ function notifyDisconnect(profile, reason) {
   if (!Notification.isSupported()) return;
 
   new Notification({
-    title: 'Auto Proxy 连接已断开',
+    title: `${appName} 连接已断开`,
     body: `${profile.server || '服务器'} 的端口映射已断开，正在自动重连。${reason ? `\n${reason}` : ''}`
   }).show();
 }

@@ -76,6 +76,7 @@ function envPreview(profile) {
 
 function setStatus(profileId, nextState) {
   states.set(profileId, { ...(states.get(profileId) || {}), ...nextState });
+  renderProfiles();
   renderStatus();
 }
 
@@ -90,8 +91,13 @@ function renderProfiles() {
   list.innerHTML = '';
 
   for (const profile of profiles) {
+    const state = states.get(profile.id)?.state;
     const button = document.createElement('button');
-    button.className = `profile-item${profile.id === selectedId ? ' active' : ''}`;
+    button.className = [
+      'profile-item',
+      profile.id === selectedId ? 'active' : '',
+      state === 'running' ? 'running' : ''
+    ].filter(Boolean).join(' ');
     button.type = 'button';
     button.innerHTML = `
       <strong>${escapeHtml(profile.server || '未命名服务器')}</strong>
@@ -169,7 +175,7 @@ async function saveCurrentProfile() {
     selectedId = next.id;
   }
 
-  profiles = (await window.autoProxy.saveProfiles(profiles)).map(normalizeProfile);
+  profiles = (await window.portBridge.saveProfiles(profiles)).map(normalizeProfile);
   renderProfiles();
   renderForm();
 }
@@ -184,18 +190,18 @@ function escapeHtml(value) {
 }
 
 async function init() {
-  profiles = (await window.autoProxy.loadProfiles()).map(normalizeProfile);
+  profiles = (await window.portBridge.loadProfiles()).map(normalizeProfile);
 
   if (profiles.length === 0) {
     profiles = [createProfile()];
-    await window.autoProxy.saveProfiles(profiles);
+    await window.portBridge.saveProfiles(profiles);
   }
 
   selectedId = profiles[0].id;
-  $('configPath').textContent = `配置保存于 ${await window.autoProxy.configPath()}`;
-  $('autoLaunch').checked = await window.autoProxy.getAutoLaunch();
+  $('configPath').textContent = `配置保存于 ${await window.portBridge.configPath()}`;
+  $('autoLaunch').checked = await window.portBridge.getAutoLaunch();
 
-  const activeStates = await window.autoProxy.tunnelStates();
+  const activeStates = await window.portBridge.tunnelStates();
   for (const state of activeStates) setStatus(state.profileId, state);
 
   renderProfiles();
@@ -222,7 +228,7 @@ $('newProfile').addEventListener('click', async () => {
   const profile = createProfile();
   profiles.push(profile);
   selectedId = profile.id;
-  await window.autoProxy.saveProfiles(profiles);
+  await window.portBridge.saveProfiles(profiles);
   renderProfiles();
   renderForm();
 });
@@ -231,17 +237,17 @@ $('duplicateProfile').addEventListener('click', async () => {
   const copy = createProfile({ ...profileFromForm(), id: crypto.randomUUID() });
   profiles.push(copy);
   selectedId = copy.id;
-  await window.autoProxy.saveProfiles(profiles);
+  await window.portBridge.saveProfiles(profiles);
   renderProfiles();
   renderForm();
 });
 
 $('deleteProfile').addEventListener('click', async () => {
   if (profiles.length <= 1) return;
-  await window.autoProxy.stopTunnel(selectedId);
+  await window.portBridge.stopTunnel(selectedId);
   profiles = profiles.filter((profile) => profile.id !== selectedId);
   selectedId = profiles[0].id;
-  await window.autoProxy.saveProfiles(profiles);
+  await window.portBridge.saveProfiles(profiles);
   renderProfiles();
   renderForm();
 });
@@ -263,12 +269,12 @@ $('startTunnel').addEventListener('click', async () => {
   }
 
   setStatus(profile.id, { state: 'starting' });
-  const result = await window.autoProxy.startTunnel(profile);
+  const result = await window.portBridge.startTunnel(profile);
   if (result.pid) setStatus(profile.id, { state: 'running', pid: result.pid });
 });
 
 $('stopTunnel').addEventListener('click', async () => {
-  await window.autoProxy.stopTunnel(selectedId);
+  await window.portBridge.stopTunnel(selectedId);
 });
 
 $('clearLog').addEventListener('click', () => {
@@ -277,14 +283,14 @@ $('clearLog').addEventListener('click', () => {
 });
 
 $('autoLaunch').addEventListener('change', async () => {
-  $('autoLaunch').checked = await window.autoProxy.setAutoLaunch($('autoLaunch').checked);
+  $('autoLaunch').checked = await window.portBridge.setAutoLaunch($('autoLaunch').checked);
 });
 
-window.autoProxy.onTunnelStatus((payload) => {
+window.portBridge.onTunnelStatus((payload) => {
   setStatus(payload.profileId, payload);
 });
 
-window.autoProxy.onTunnelLog((payload) => {
+window.portBridge.onTunnelLog((payload) => {
   appendLog(payload.profileId, payload.line);
 });
 

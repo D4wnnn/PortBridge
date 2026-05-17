@@ -1,7 +1,8 @@
 {
-  "name": "auto-proxy",
+  "name": "portbridge",
+  "productName": "PortBridge",
   "version": "0.1.0",
-  "description": "A small Electron app for managing SSH reverse proxy port mappings.",
+  "description": "A small Electron app for managing SSH port tunnels.",
   "main": "src/main.js",
   "private": true,
   "scripts": {

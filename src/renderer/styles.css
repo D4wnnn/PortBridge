@@ -16,10 +16,16 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   margin: 0;
+  height: 100%;
   min-width: 900px;
   min-height: 560px;
+  overflow: hidden;
   color: var(--text);
   background: var(--bg);
   font-family: "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
@@ -38,13 +44,16 @@ button {
 .app-shell {
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 560px;
+  overflow: hidden;
 }
 
 .sidebar {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-height: 0;
   padding: 20px;
   background: #20262f;
   color: #f8fafc;
@@ -85,9 +94,12 @@ button {
 
 .profile-list {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 8px;
+  min-height: 0;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .setting-toggle {
@@ -126,6 +138,17 @@ button {
   background: rgba(137, 216, 200, 0.15);
 }
 
+.profile-item.running {
+  border-color: rgba(18, 183, 106, 0.9);
+  background: rgba(18, 183, 106, 0.14);
+  box-shadow: inset 4px 0 0 #12b76a;
+}
+
+.profile-item.running.active {
+  border-color: #89d8c8;
+  background: linear-gradient(90deg, rgba(18, 183, 106, 0.22), rgba(137, 216, 200, 0.15));
+}
+
 .profile-item strong {
   overflow: hidden;
   font-size: 14px;
@@ -145,6 +168,8 @@ button {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
+  overflow: auto;
   padding: 20px;
   gap: 18px;
 }

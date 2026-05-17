@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('autoProxy', {
+contextBridge.exposeInMainWorld('portBridge', {
   loadProfiles: () => ipcRenderer.invoke('profiles:load'),
   saveProfiles: (profiles) => ipcRenderer.invoke('profiles:save', profiles),
   configPath: () => ipcRenderer.invoke('profiles:configPath'),
