@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect width="256" height="256" rx="56" fill="#176b5b"/>
+  <rect x="42" y="54" width="172" height="148" rx="32" fill="#d7f2eb"/>
+  <circle cx="86" cy="128" r="20" fill="#176b5b"/>
+  <circle cx="170" cy="128" r="20" fill="#176b5b"/>
+  <path d="M102 128h48" fill="none" stroke="#176b5b" stroke-width="14" stroke-linecap="round"/>
+  <path d="M138 101l31 27-31 27" fill="none" stroke="#176b5b" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="128" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#d7f2eb">AUTO PROXY</text>
+</svg>

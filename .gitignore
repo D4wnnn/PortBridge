@@ -1,0 +1,4 @@
+node_modules/
+rust-env-check/
+rust-env-check-vcs-none/
+profiles.json

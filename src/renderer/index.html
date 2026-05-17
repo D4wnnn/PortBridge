@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto Proxy</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">AP</div>
+          <div>
+            <h1>Auto Proxy</h1>
+            <p>SSH 端口映射管理</p>
+          </div>
+        </div>
+
+        <button id="newProfile" class="primary-button">新建映射</button>
+        <label class="setting-toggle">
+          <input id="autoLaunch" type="checkbox" />
+          <span>开机自动运行</span>
+        </label>
+        <div id="profileList" class="profile-list"></div>
+      </aside>
+
+      <main class="workspace">
+        <section class="topbar">
+          <div>
+            <h2 id="pageTitle">端口映射</h2>
+            <p id="configPath" class="muted"></p>
+          </div>
+          <div class="actions">
+            <button id="duplicateProfile" class="ghost-button">复制</button>
+            <button id="deleteProfile" class="danger-button">删除</button>
+            <button id="saveProfile" class="primary-button">保存</button>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <form id="profileForm" class="panel mapping-panel">
+            <label class="server-field">
+              服务器
+              <input id="server" name="server" placeholder="服务器别名或 user@example.com" autocomplete="off" required />
+            </label>
+
+            <div class="map-row">
+              <label class="endpoint local-side">
+                <span>本地端口</span>
+                <input id="localPort" name="localPort" inputmode="numeric" pattern="[0-9]*" maxlength="5" required />
+              </label>
+
+              <button id="directionToggle" class="direction-button" type="button" title="切换方向">
+                <span id="directionArrow">&larr;</span>
+                <small id="directionText">远程到本地</small>
+              </button>
+
+              <label class="endpoint remote-side">
+                <span>远程端口</span>
+                <input id="remotePort" name="remotePort" inputmode="numeric" pattern="[0-9]*" maxlength="5" required />
+              </label>
+            </div>
+
+            <div class="command-box">
+              <span>命令预览</span>
+              <code id="commandPreview"></code>
+            </div>
+
+            <div class="env-box">
+              <span id="envTitle">环境变量</span>
+              <code id="envPreview"></code>
+            </div>
+          </form>
+
+          <section class="panel run-panel">
+            <div class="status-row">
+              <div>
+                <span id="statusDot" class="status-dot idle"></span>
+                <strong id="statusLabel">未连接</strong>
+              </div>
+              <span id="pidLabel" class="muted"></span>
+            </div>
+
+            <div class="run-actions">
+              <button id="startTunnel" class="primary-button">启动</button>
+              <button id="stopTunnel" class="ghost-button">停止</button>
+            </div>
+
+            <div class="log-header">
+              <span>日志</span>
+              <button id="clearLog" class="ghost-button small">清空</button>
+            </div>
+            <pre id="logOutput" class="log-output"></pre>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

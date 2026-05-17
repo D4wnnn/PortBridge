@@ -1,0 +1,14 @@
+{
+  "name": "auto-proxy",
+  "version": "0.1.0",
+  "description": "A small Electron app for managing SSH reverse proxy port mappings.",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^31.7.7"
+  }
+}
